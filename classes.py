@@ -10,6 +10,18 @@ class Machine():
     @property
     def speed(self):
         return self.__speed
+    @speed.setter
+    def speed(self, speed):
+        if 0 <= speed:
+            self.__speed = speed
+        else:
+            print ("Недопустимое значение")
+
+# геттер и сеттрет для цвета
+    def set_color(self, color):
+        self.__color = color
+    def get_color(self):
+        return self.__color
 
     def drive(self):
         print(f"driving, speed = {self.__speed}")
@@ -25,5 +37,7 @@ class Auto(Machine):
 a = Machine()
 a.drive()
 a.stop()
-a.speed = 30
 a.drive()
+a.set_color('green')
+print(a.get_color())
+
