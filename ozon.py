@@ -6,24 +6,26 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+import time
 
-baseURL = 'https://megamarket.ru'
+baseURL = 'https://ozon.ru'
 target = input('target? ')
 targetURL = baseURL + '/catalog/?q=' + target.replace(' ', '%20')
-
 
 def get_source_html(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     driver.maximize_window()
 
+
     try:
         driver.get(url=url)
         WebDriverWait(driver, 60).until(ec.presence_of_element_located((By.TAG_NAME, "html")))
-        with open('source-page.html', 'w', encoding='utf-8') as file:
+        with open('source-page_ozon.html', 'w', encoding='utf-8') as file:
             file.write(driver.page_source)
     except Exception as ex:
         print(ex)
     finally:
+        time.sleep(6)
         driver.close()
         driver.quit()
 
@@ -67,8 +69,8 @@ def get_items(file_path):
 
 def main():
     get_source_html(url=targetURL)
-    get_items(file_path='source-page.html')
+    get_items(file_path='source-page_ozon.html')
 
-
+# запуск кода
 if __name__ == '__main__':
     main()
