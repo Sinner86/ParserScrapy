@@ -8,7 +8,8 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 baseURL = 'https://megamarket.ru'
-target = input('target? ')
+# target = input('target? ')
+target = 'rtx 3060'
 targetURL = baseURL + '/catalog/?q=' + target.replace(' ', '%20')
 
 
@@ -19,7 +20,7 @@ def get_source_html(url):
     try:
         driver.get(url=url)
         WebDriverWait(driver, 60).until(ec.presence_of_element_located((By.TAG_NAME, "html")))
-        with open('source-page.html', 'w', encoding='utf-8') as file:
+        with open('source-page-mm.html', 'w', encoding='utf-8') as file:
             file.write(driver.page_source)
     except Exception as ex:
         print(ex)
@@ -67,7 +68,7 @@ def get_items(file_path):
 
 def main():
     get_source_html(url=targetURL)
-    get_items(file_path='source-page.html')
+    get_items(file_path='source-page-mm.html')
 
 
 if __name__ == '__main__':
