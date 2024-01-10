@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 # from selenium.webdriver.chrome.service import Service
 # from webdriver_manager.chrome import ChromeDriverManager
 #
-# baseURL = 'https://megamarket.ru'
-# # target = input('target? ')
+baseURL = 'https://megamarket.ru'
+# target = input('target? ')
 # target = 'rtx 3060'
 # targetURL = baseURL + '/catalog/?q=' + target.replace(' ', '%20')
 
@@ -39,33 +39,32 @@ def get_items(file_path):
     items = {}
     for item in items_divs:
         item_block = item.find('div', class_='item-block')
-        # item_price_block = item_block.find('div', class_='inner catalog-item__prices-container')
-        item_money = item_block('div', class_='item-money')
-        print(item_money)
-        # item_price = item_money.find('div', class_='item-price')
-        # item_price_result = item_price.find('span').get_text()
-        #
-        # item_bonus = item_money.find('div', class_='item-bonus')
-        # if isinstance(item_bonus, bs4.element.Tag):
-        #     item_bonus_percent = item_bonus.find('span', class_='bonus-percent').get_text()
-        #     item_bonus_amount = item_bonus.find('span', class_='bonus-amount').get_text()
-        #     print(item_bonus_percent, item_bonus_amount)
-        # else:
-        #     continue
+        item_price_block = item_block.find('div', class_='inner catalog-item__prices-container')
+        item_money = item_price_block.find('div', class_='item-money')
+        item_price = item_money.find('div', class_='item-price')
+        item_price_result = item_price.find('span').get_text()
 
-        # bonus = int(item_bonus_amount.replace(' ', ''))
-        # price = int(item_price_result[0:-1].replace(' ', ''))
-        # k = price / bonus
-        # item_url = item.get('router-link-uri')
-        # link = baseURL + item_url.replace(' ', '%20')
-        # items[k] = {'price': item_price_result[0:-2], 'bonus amount': item_bonus_amount,
-        #             'bonus percent': item_bonus_percent, 'link': link}
+        item_bonus = item_money.find('div', class_='item-bonus')
+        if isinstance(item_bonus, bs4.element.Tag):
+            item_bonus_percent = item_bonus.find('span', class_='bonus-percent').get_text()
+            item_bonus_amount = item_bonus.find('span', class_='bonus-amount').get_text()
+        else:
+            continue
 
-    items = dict(sorted(items.items(), key=lambda x: x[0]))
-    for item in items:
-        print(f'{item} - {items[item]}')
-
-    return items
+        bonus = int(item_bonus_amount.replace(' ', ''))
+        price = int(item_price_result[0:-1].replace(' ', ''))
+        print(bonus, price)
+        k = price / bonus
+        item_url = item.get('catalog-item-desktop')
+        link = baseURL + item_url.replace(' ', '%20')
+        items[k] = {'price': item_price_result[0:-2], 'bonus amount': item_bonus_amount,
+                    'bonus percent': item_bonus_percent, 'link': link}
+    #
+    # items = dict(sorted(items.items(), key=lambda x: x[0]))
+    # for item in items:
+    #     print(f'{item} - {items[item]}')
+    #
+    # return items
 
 
 def main():
