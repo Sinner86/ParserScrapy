@@ -8,13 +8,30 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.chrome.service import Service
 
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager
 
 import pandas as pd
 
 baseURL = 'https://megamarket.ru'
 # target = input('Ввести искомый товар')
-target = 'sun-m27bg130'
+# target = 'sun-m27bg130'
+target = 'rtx 3060'
 targetURL = baseURL + '/catalog/?q=' + target.replace(' ', '%20')
+
+def get_source_html(url):
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    driver.maximize_window()
+
+    try:
+        driver.get(url=url)
+        WebDriverWait(driver, 60).until(ec.presence_of_element_located((By.TAG_NAME, "html")))
+        with open('source-page-mm.html', 'w', encoding='utf-8') as file:
+            file.write(driver.page_source)
+    except Exception as ex:
+        print(ex)
+    finally:
+        driver.close()
+        driver.quit()
 
 def get_items(file_path):
     with open(file_path, encoding='utf-8') as file:
@@ -36,6 +53,7 @@ def get_items(file_path):
             cupon1 = 12000
         else: cupon1 = 0
         return cupon1
+    df = pd.DataFrame({'наименование': [], 'Полная цена': [], 'Кэшбек': [], 'Процент Кэшбека': [], 'Купон': [], 'Стоимость с плюшками': []})
 
     for item in items_divs:
         item_block = item.find('div', class_='item-block')
@@ -50,27 +68,23 @@ def get_items(file_path):
             item_bonus_amount = item_bonus.find('span', class_='bonus-amount').get_text()
         else:
             continue
-        promo = 2000
 
-
-        bonus = int(item_bonus_amount.replace(' ', ''))
         bonus_percent = int(item_bonus_percent.replace('%', ''))
         price = int(item_price_result[0:-1].replace(' ', ''))
-        # k = price / bonus
-        # item_url = item.find('a')
-        #
-        # link = baseURL + item_url.replace(' ', '%20')
-        # items[k] = {'price': item_price_result[0:-2], 'bonus amount': item_bonus_amount,
-        #             'bonus percent': item_bonus_percent, 'link': link}
-        best_price = (price - promo) * (1 - bonus_percent / 100)
-        df_item = pd.DataFrame([target, price, item_bonus_amount, item_bonus_percent, cupon(price), best_price])
-        df.append(df_item)
 
-    return df
+        best_price = (price - cupon(price)) * (1 - bonus_percent / 100)
+        df_item = pd.DataFrame({'наименование': [target], 'Полная цена': [price], 'Кэшбек': [item_bonus_amount], 'Процент Кэшбека': [item_bonus_percent],'Купон': [cupon(price)], 'Стоимость с плюшками': [best_price]})
+        df = df._append(df_item)
+
+    return print(df)
+def main():
+    get_source_html(url=targetURL)
+    get_items(file_path='source-page-mm.html')
+
+
 def main():
     # get_source_html(url=targetURL)
-    # get_items(file_path='source-page-mm.html')
-    print(get_items(file_path='source-page-mm.html'))
+    get_items(file_path='source-page-mm.html')
 
 if __name__ == '__main__':
     main()
