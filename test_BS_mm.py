@@ -53,18 +53,18 @@ def get_items(file_path):
 
         bonus = int(item_bonus_amount.replace(' ', ''))
         price = int(item_price_result[0:-1].replace(' ', ''))
-        print(bonus, price)
         k = price / bonus
-        item_url = item.get('catalog-item-desktop')
+        item_url = item.find('a')
+
         link = baseURL + item_url.replace(' ', '%20')
         items[k] = {'price': item_price_result[0:-2], 'bonus amount': item_bonus_amount,
                     'bonus percent': item_bonus_percent, 'link': link}
-    #
-    # items = dict(sorted(items.items(), key=lambda x: x[0]))
-    # for item in items:
-    #     print(f'{item} - {items[item]}')
-    #
-    # return items
+
+    items = dict(sorted(items.items(), key=lambda x: x[0]))
+    for item in items:
+        print(f'{item} - {items[item]}')
+
+    return items
 
 
 def main():

@@ -29,3 +29,8 @@
 #     truck = Vehicle("red", 3, 6, "truck")
 #     print(truck.drive())
 #     print(truck.brake())
+
+import pandas as pd
+
+df = pd.DataFrame({'наименование': [], 'Полная цена': [], 'Кэшбек': [], 'Процент Кэшбека': [], 'Стоимость с плюшками': []})
+print(df)
