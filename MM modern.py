@@ -77,13 +77,9 @@ def get_items(file_path):
         df = df._append(df_item)
 
     return print(df)
+
 def main():
     get_source_html(url=targetURL)
-    get_items(file_path='source-page-mm.html')
-
-
-def main():
-    # get_source_html(url=targetURL)
     get_items(file_path='source-page-mm.html')
 
 if __name__ == '__main__':
