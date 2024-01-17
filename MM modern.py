@@ -7,10 +7,12 @@ import openpyxl
 targets = ['rtx 3060', 'rtx 4060']
 
 x27g = ['https://megamarket.ru/catalog/details/monitor-xiaomi-x27g-g27-165hz-1920x1080-ips-600013078509/#?details_block=prices']
-sunwind130 = []
+sunwind130 = ['https://megamarket.ru/catalog/details/monitor-sunwind-chernyy-sun-m27bg130-100045194336_11440/']
 rt0700c = ['https://megamarket.ru/catalog/details/frezer-makita-rt0700c-100022771469/#?details_block=prices']
 dbo180z = ['https://megamarket.ru/catalog/details/akkumulyatornaya-ekscentrikovaya-shlifovalnaya-mashina-makita-dbo180z-100000379620/']
 rtx3060 = ['https://megamarket.ru/catalog/details/videokarta-msi-nvidia-geforce-rtx-3060-ventus-2x-12g-oc-100028286028/']
+Makita2012NB = ['https://megamarket.ru/catalog/details/stanok-reysmusovyy-makita-2012nb-123670-100022771140/#?related_search=%D1%80%D0%B5%D0%B9%D1%81%D0%BC%D1%83%D1%81%20makita']
+
 def main(targets):
     baseURL = 'https://megamarket.ru'
     targets = targets
