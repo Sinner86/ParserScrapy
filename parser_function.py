@@ -18,7 +18,10 @@ def get_source_html(url):
 
     try:
         driver.get(url=url)
+        button_element = driver.find_element(By.CLASS_NAME,"more-offers-button")
+        button_element.click()
         WebDriverWait(driver, 60).until(ec.presence_of_element_located((By.TAG_NAME, "html")))
+
         with open('source-page-mm.html', 'w', encoding='utf-8') as file:
             file.write(driver.page_source)
     except Exception as ex:
@@ -145,7 +148,7 @@ def get_items_page(file_path):
                                 'Процент Кэшбека': [bonus_percent], 'Купон': [cupon(price)],
                                 'Стоимость с плюшками': [best_price]})
         df = df._append(df_item, ignore_index = False)
-        print(df_item['Стоимость с плюшками'])
 
+        print(df_item['Стоимость с плюшками'])
 
     return df.sort_values(by=['Стоимость с плюшками'])
