@@ -1,14 +1,16 @@
 import parser_function as pf
 import pandas as pd
-# import openpyxl
+import openpyxl
 
 # список наименований товаров для поиска
 # targets = ['rtx 3060', 'rtx 4060', 'Xiaomi X27G', 'sun-m27bg130']
 targets = ['rtx 3060', 'rtx 4060']
-# links = ['https://megamarket.ru/catalog/details/monitor-xiaomi-x27g-g27-165hz-1920x1080-ips-600013078509/#?details_block=prices']
-# links = ['https://megamarket.ru/catalog/details/frezer-makita-rt0700c-100022771469/#?details_block=prices']
-links = ['https://megamarket.ru/catalog/details/akkumulyatornaya-ekscentrikovaya-shlifovalnaya-mashina-makita-dbo180z-100000379620/', 'https://megamarket.ru/catalog/details/frezer-makita-rt0700c-100022771469/#?details_block=prices']
 
+x27g = ['https://megamarket.ru/catalog/details/monitor-xiaomi-x27g-g27-165hz-1920x1080-ips-600013078509/#?details_block=prices']
+sunwind130 = []
+rt0700c = ['https://megamarket.ru/catalog/details/frezer-makita-rt0700c-100022771469/#?details_block=prices']
+dbo180z = ['https://megamarket.ru/catalog/details/akkumulyatornaya-ekscentrikovaya-shlifovalnaya-mashina-makita-dbo180z-100000379620/']
+rtx3060 = ['https://megamarket.ru/catalog/details/videokarta-msi-nvidia-geforce-rtx-3060-ventus-2x-12g-oc-100028286028/']
 def main(targets):
     baseURL = 'https://megamarket.ru'
     targets = targets
@@ -29,7 +31,8 @@ def main(targets):
     finally:
         writer.close()
 
-def main2(link):
+def main2(links):
+    links = links
     path = 'output_page.xlsx'
     writer = pd.ExcelWriter(path)
     try:
@@ -39,9 +42,9 @@ def main2(link):
             # переработка полученных данных в таблицу
             info = pf.get_items_page(file_path='source-page-mm.html')
             # запись в файл
-            info.to_excel(writer, sheet_name=f'{target}')
+            info.to_excel(writer)
     finally:
         writer.close()
 if __name__ == '__main__':
     # main(targets)
-    main2(links)
+    main2(rtx3060)
