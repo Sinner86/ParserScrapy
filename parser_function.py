@@ -93,7 +93,7 @@ def get_items_page(file_path):
     items_divs = soup.find_all('div', 'product-offer product-offer_with-payment-method')
     # подготовка пустого датафреймас именованными колонками
     df = pd.DataFrame({'наименование': [], 'Магазин': [], 'Полная цена': [], 'Кэшбек': [], 'Процент Кэшбека': [], 'Купон': [],
-                       'Стоимость с плюшками': [], 'Ссылка': []})
+                       'Стоимость с плюшками': []})
 
     # функция определения купона по стоимости товара
     def cupon(price):
@@ -114,19 +114,23 @@ def get_items_page(file_path):
         product_offer_price = item.find('div', class_='product-offer-price')
 
         # получение полной цены
-        price = product_offer_price.find('span').get_text()
-        price = int(price.replace(' ', ''))
+        try:
+            price = product_offer_price.find('span', class_='product-offer-price__amount').get_text()
+            price = int(price.replace(' ', '').replace('\xa0₽', ''))
+        except Exception as e:
+            print(e)
+            continue
 
         # получение наименования товар
         header = soup.find('h1', class_='pdp-header__title pdp-header__title_only-title')
         name = header.get_text()
 
         # получение бонусов
-        item_bonus_block = product_offer_price.find('div', class_='product-offer-price-bonus product-offer-price-bonus_with-money-bonus')
-        item_bonus = item_bonus_block.find('div', class_='money-bonus xs money-bonus_loyalty')
-        if isinstance(item_bonus, bs4.element.Tag):
-            bonus_percent = int(item_bonus.find('span', class_='bonus-percent').get_text().replace('%', ''))
-            bonus_amount = int(item_bonus.find('span', class_='bonus-amount').get_text().replace(' ', ''))
+        item_bonus_block = product_offer_price.find('div', class_='pdp-offer-item-cashback-block__money-bonus money-bonus sm money-bonus_loyalty')
+        # item_bonus = item_bonus_block.find('div', class_='pdp-offer-item-cashback-block__money-bonus money-bonus sm money-bonus_loyalty')
+        if isinstance(item_bonus_block, bs4.element.Tag):
+            bonus_percent = int(item_bonus_block.find('span', class_='bonus-percent').get_text().replace('%', ''))
+            bonus_amount = int(item_bonus_block.find('span', class_='bonus-amount').get_text().replace(' ', ''))
         else:
             continue
         # получение названия магазина
@@ -139,7 +143,9 @@ def get_items_page(file_path):
         # составление строки с данными и добавление к датафрейму
         df_item = pd.DataFrame({'наименование': [name], 'Магазин': [market_name], 'Полная цена': [price], 'Кэшбек': [bonus_amount],
                                 'Процент Кэшбека': [bonus_percent], 'Купон': [cupon(price)],
-                                'Стоимость с плюшками': [best_price], 'Ссылка': [link]})
-        df = df._append(df_item)
+                                'Стоимость с плюшками': [best_price]})
+        df = df._append(df_item, ignore_index = False)
+        print(df_item['Стоимость с плюшками'])
+
 
     return df.sort_values(by=['Стоимость с плюшками'])

@@ -33,9 +33,9 @@ def main2(link):
     try:
         for link in links:
             # запуск драйвера браузера и получение данных
-            pf.get_source_html(url=link)
+            # pf.get_source_html(url=link)
             # переработка полученных данных в таблицу
-            info = pf.get_items(file_path='source-page-mm.html')
+            info = pf.get_items_page(file_path='source-page-mm.html')
             # запись в файл
             info.to_excel(writer)
     finally:
