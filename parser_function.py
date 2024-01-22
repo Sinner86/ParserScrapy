@@ -1,4 +1,5 @@
 import bs4
+import pandas
 from bs4 import BeautifulSoup
 
 from selenium import webdriver
@@ -15,18 +16,17 @@ import pandas as pd
 def get_source_html(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
     driver.maximize_window()
-
+    driver.get(url=url)
     try:
-        driver.get(url=url)
         button_element = driver.find_element(By.CLASS_NAME,"more-offers-button")
         button_element.click()
+    except Exception as ex:
+        print(ex)
+    finally:
         WebDriverWait(driver, 60).until(ec.presence_of_element_located((By.TAG_NAME, "html")))
 
         with open('source-page-mm.html', 'w', encoding='utf-8') as file:
             file.write(driver.page_source)
-    except Exception as ex:
-        print(ex)
-    finally:
         driver.close()
         driver.quit()
 
@@ -153,3 +153,18 @@ def get_items_page(file_path):
         print(df_item['Стоимость с плюшками'])
 
     return df.sort_values(by=['Стоимость с плюшками'])
+class ItemMM():
+    def __init__(self, product_name, market, fullprice, bonus_amount, bonus_percent, bestprice, link, cupon = 0):
+        self.product_name = product_name
+        self.market = market
+        self.fullprice = fullprice
+        self.bonus_amount = bonus_amount
+        self.bonus_percent = bonus_percent
+        self.cupon = cupon
+        self.bestprice = bestprice
+        self.link = link
+
+    def to_df(self):
+        df = pandas.DataFrame({'наименование': [self.product_name], 'Магазин': [self.market], 'Полная цена': [self.fullprice],
+                               'Кэшбек': [self.bonus_amount], 'Процент Кэшбека': [self.bonus_percent], 'Купон': [self.cupon],
+                               'Стоимость с плюшками': [self.bestprice], 'Ссылка': [self.link]})

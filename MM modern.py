@@ -3,8 +3,8 @@ import pandas as pd
 import openpyxl
 
 # список наименований товаров для поиска
-# targets = ['rtx 3060', 'rtx 4060', 'Xiaomi X27G', 'sun-m27bg130']
-targets = ['rtx 3060', 'rtx 4060']
+targets = ['rtx 3060', 'rtx 4060', 'Xiaomi X27G', 'sun-m27bg130']
+# targets = ['rtx 3060']
 
 x27g = ['https://megamarket.ru/catalog/details/monitor-xiaomi-x27g-g27-165hz-1920x1080-ips-600013078509/#?details_block=prices']
 sunwind130 = ['https://megamarket.ru/catalog/details/monitor-sunwind-chernyy-sun-m27bg130-100045194336_11440/']
@@ -29,7 +29,7 @@ def main(targets):
             # переработка полученных данных в таблицу
             info = pf.get_items(file_path='source-page-mm.html')
             # запись в файл
-            info.to_excel(writer, sheet_name=f'{target[-5, -1]}')
+            info.to_excel(writer, sheet_name=str(target))
     finally:
         writer.close()
 
@@ -48,5 +48,5 @@ def main2(links):
     finally:
         writer.close()
 if __name__ == '__main__':
-    # main(targets)
-    main2(rtx3060)
+    main(targets)
+    # main2(rtx3060)
