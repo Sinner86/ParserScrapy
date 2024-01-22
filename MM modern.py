@@ -29,7 +29,7 @@ def main(targets):
             # переработка полученных данных в таблицу
             info = pf.get_items(file_path='source-page-mm.html')
             # запись в файл
-            info.to_excel(writer, sheet_name=str(target))
+            info.to_excel(writer, sheet_name=str(targeet))
     finally:
         writer.close()
 

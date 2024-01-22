@@ -165,6 +165,6 @@ class ItemMM():
         self.link = link
 
     def to_df(self):
-        df = pandas.DataFrame({'наименование': [self.product_name], 'Магазин': [self.market], 'Полная цена': [self.fullprice],
+        df = pd.DataFrame({'наименование': [self.product_name], 'Магазин': [self.market], 'Полная цена': [self.fullprice],
                                'Кэшбек': [self.bonus_amount], 'Процент Кэшбека': [self.bonus_percent], 'Купон': [self.cupon],
                                'Стоимость с плюшками': [self.bestprice], 'Ссылка': [self.link]})

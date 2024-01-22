@@ -31,9 +31,30 @@
 #     print(truck.brake())
 
 import pandas as pd
+class ItemMM():
+    def __init__(self, product_name, fullprice, bonus_percent, link = 'None', cupon = 0, market ='noName'):
+        self.product_name = product_name
+        self.fullprice = fullprice
+        self.market = market
+        self.bonus_percent = bonus_percent
+        self.bonus_amount = self.fullprice * ((100 - self.bonus_percent) / 100)
+        self.cupon = cupon
+        self.bestprice = self.fullprice - self.cupon - self.bonus_amount
+        self.link = link
 
-df = pd.DataFrame()
-df1 = pd.DataFrame({'наименование': [], 'Полная цена': [], 'Кэшбек': [], 'Процент Кэшбека': [], 'Стоимость с плюшками': []})
-df2 = pd.DataFrame({'наименование': ['sun'], 'Полная цена': [17690], 'Кэшбек': [6000], 'Процент кэшбека': [30], 'Стоимость с плюшками': [10000]})
-df = df1._append(df2)
-print(df)
+    def to_df(self):
+        df = pd.DataFrame({'наименование': [self.product_name], 'Магазин': [self.market], 'Полная цена': [self.fullprice],
+                               'Кэшбек': [self.bonus_amount], 'Процент Кэшбека': [self.bonus_percent], 'Купон': [self.cupon],
+                               'Стоимость с плюшками': [self.bestprice], 'Ссылка': [self.link]})
+
+    @property
+    def product_name(self):
+        return self._product_name
+
+    @product_name.setter
+    def product_name(self, value):
+        self._product_name = value
+
+item = ItemMM('rtx3060', 31000, 36)
+item.product_name = 'rtx4060'
+print(item.product_name)
