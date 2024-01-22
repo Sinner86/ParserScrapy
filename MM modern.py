@@ -48,5 +48,5 @@ def main2(links):
     finally:
         writer.close()
 if __name__ == '__main__':
-    main(targets)
-    # main2(rtx3060)
+    # main(targets)
+    main2(Makita2012NB)

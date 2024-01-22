@@ -12,6 +12,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 import pandas as pd
 
+ikra = {11000: 2000, 30000: 5000, 50000: 9000, 75000: 12000}
+    # mam = {12000: 2000, 2500: 4000, 37000: 6000, 47000: 8000}
+mam = [[12000, 2000], [25000, 4000], [37000, 6000], [47000, 8000]]
+
 # функция сбора информации с сайта и записи в файл
 def get_source_html(url):
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
@@ -41,18 +45,17 @@ def get_items(file_path):
     df = pd.DataFrame({'наименование': [], 'Полная цена': [], 'Кэшбек': [], 'Процент Кэшбека': [], 'Купон': [], 'Стоимость с плюшками': [], 'Ссылка': []})
 
     # функция определения купона по стоимости товара
-    ikra = {11000: 2000, 30000: 5000, 50000: 9000, 75000: 12000}
-    def cupon(price):
-        if 11000 < price < 30000:
-            cupon1 = 2000
-        elif 30000 < price < 50000:
-            cupon1 = 5000
-        elif 50000 < price < 75000:
-            cupon1 = 9000
-        elif price > 75000:
-            cupon1 = 12000
-        else: cupon1 = 0
-        return cupon1
+
+
+
+    def cupon(price, cupon_name):
+        cupon = 0
+        for cup in cupon_name:
+           if price > cup[0]:
+               cupon = cup[1]
+           else: break
+
+        return cupon
 
     # перебор блоков с товарами
     for item in items_divs:
@@ -80,7 +83,7 @@ def get_items(file_path):
         price = int(item_price_result[0:-1].replace(' ', ''))
 
         # расчет цены с учетом купона и кэшбека
-        best_price = (price - cupon(price)) * (1 - bonus_percent / 100)
+        best_price = (price - cupon(price, mam)) * (1 - bonus_percent / 100)
 
         # составление строки с данными и добавление к датафрейму
         df_item = pd.DataFrame({'наименование': [name], 'Полная цена': [price], 'Кэшбек': [item_bonus_amount], 'Процент Кэшбека': [item_bonus_percent],'Купон': [cupon(price)], 'Стоимость с плюшками': [best_price], 'Ссылка': [link]})
@@ -100,18 +103,16 @@ def get_items_page(file_path):
                        'Стоимость с плюшками': []})
 
     # функция определения купона по стоимости товара
-    def cupon(price):
-        if 11000 < price < 30000:
-            cupon_finish = 2000
-        elif 30000 < price < 50000:
-            cupon_finish = 5000
-        elif 50000 < price < 75000:
-            cupon_finish = 9000
-        elif price > 75000:
-            cupon_finish = 12000
-        else:
-            cupon_finish = 0
-        return cupon_finish
+    mam = [[12000, 2000], [25000, 4000], [37000, 6000], [47000, 8000]]
+    def cupon(price, cupon_name):
+        cupon = 0
+        for cup in cupon_name:
+            if price > cup[0]:
+                cupon = cup[1]
+            else:
+                break
+
+        return cupon
 
     # перебор блоков с товарами
     for item in items_divs:
@@ -142,11 +143,11 @@ def get_items_page(file_path):
         market_name = product_offer_name.find('span', class_='pdp-merchant-rating-block__merchant-name').get_text()
 
         # расчет цены с учетом купона и кэшбека
-        best_price = (price - cupon(price)) * (1 - bonus_percent / 100)
+        best_price = (price - cupon(price,mam)) * (1 - bonus_percent / 100)
 
         # составление строки с данными и добавление к датафрейму
         df_item = pd.DataFrame({'наименование': [name], 'Магазин': [market_name], 'Полная цена': [price], 'Кэшбек': [bonus_amount],
-                                'Процент Кэшбека': [bonus_percent], 'Купон': [cupon(price)],
+                                'Процент Кэшбека': [bonus_percent], 'Купон': [cupon(price, mam)],
                                 'Стоимость с плюшками': [best_price]})
         df = df._append(df_item, ignore_index = False)
 
