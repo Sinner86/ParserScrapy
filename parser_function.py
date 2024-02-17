@@ -11,10 +11,12 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 import pandas as pd
+import time
 
 ikra = {11000: 2000, 30000: 5000, 50000: 9000, 75000: 12000}
     # mam = {12000: 2000, 2500: 4000, 37000: 6000, 47000: 8000}
 mam = [[12000, 2000], [25000, 4000], [37000, 6000], [47000, 8000]]
+kinza = [[10000, 2000], [20000, 4000], [30000, 6000], [40000, 8000]]
 
 # функция сбора информации с сайта и записи в файл
 def get_source_html(url):
@@ -31,6 +33,7 @@ def get_source_html(url):
 
         with open('source-page-mm.html', 'w', encoding='utf-8') as file:
             file.write(driver.page_source)
+            # time.sleep(15)
         driver.close()
         driver.quit()
 
@@ -83,10 +86,10 @@ def get_items(file_path):
         price = int(item_price_result[0:-1].replace(' ', ''))
 
         # расчет цены с учетом купона и кэшбека
-        best_price = (price - cupon(price, mam)) * (1 - bonus_percent / 100)
+        best_price = (price - cupon(price, kinza)) * (1 - bonus_percent / 100)
 
         # составление строки с данными и добавление к датафрейму
-        df_item = pd.DataFrame({'наименование': [name], 'Полная цена': [price], 'Кэшбек': [item_bonus_amount], 'Процент Кэшбека': [item_bonus_percent],'Купон': [cupon(price)], 'Стоимость с плюшками': [best_price], 'Ссылка': [link]})
+        df_item = pd.DataFrame({'наименование': [name], 'Полная цена': [price], 'Кэшбек': [item_bonus_amount], 'Процент Кэшбека': [item_bonus_percent],'Купон': [cupon(price,kinza)], 'Стоимость с плюшками': [best_price], 'Ссылка': [link]})
         df = df._append(df_item)
 
     return df.sort_values(by=['Стоимость с плюшками'])
@@ -143,11 +146,11 @@ def get_items_page(file_path):
         market_name = product_offer_name.find('span', class_='pdp-merchant-rating-block__merchant-name').get_text()
 
         # расчет цены с учетом купона и кэшбека
-        best_price = (price - cupon(price,mam)) * (1 - bonus_percent / 100)
+        best_price = (price - cupon(price,kinza)) * (1 - bonus_percent / 100)
 
         # составление строки с данными и добавление к датафрейму
         df_item = pd.DataFrame({'наименование': [name], 'Магазин': [market_name], 'Полная цена': [price], 'Кэшбек': [bonus_amount],
-                                'Процент Кэшбека': [bonus_percent], 'Купон': [cupon(price, mam)],
+                                'Процент Кэшбека': [bonus_percent], 'Купон': [cupon(price, kinza)],
                                 'Стоимость с плюшками': [best_price]})
         df = df._append(df_item, ignore_index = False)
 
